@@ -138,5 +138,5 @@ Apple 생성은 IAppleFactory 인터페이스를 통해 추상화되었으며, A
 
 ## 데모 및 저장소 링크
 
--   🕹️ Web Demo: ![실행하기](https://mayquartet.com/my_htmls/Apple_Game/index.html)
+-   🕹️ Web Demo: https://mayquartet.com/my_htmls/Apple_Game/index.html
 -   📦 GitHub Repository: https://github.com/ralskwo/Apple-Game
