@@ -4,12 +4,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     private BoardManager boardManager;
-    private UIManager uiManager;
     private TimerManager timerManager;
-    private IGameState currentState;
-
     public int Score { get; private set; }
-    public UIManager UIManager => uiManager;
 
     void Awake()
     {
@@ -19,10 +15,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         boardManager = ServiceLocator.Get<BoardManager>();
-        uiManager = ServiceLocator.Get<UIManager>();
         timerManager = ServiceLocator.Get<TimerManager>();
 
-        ChangeState(new PlayingState(this));
         StartGame();
     }
 
@@ -30,62 +24,43 @@ public class GameManager : MonoBehaviour
     {
         Score = 0;
         boardManager.GenerateBoard();
-        uiManager.UpdateScoreUI(Score);
         timerManager.StartTimer();
 
+        // 점수 업데이트 이벤트 발생 (UIManager는 이를 구독)
         GameEvents.OnScoreUpdated?.Invoke(Score);
     }
 
     public void EndGame()
     {
-        ChangeState(new EndState(this));
+        // 게임 종료 시 직접 UI 업데이트 및 이벤트 발생
+        GameEvents.OnGameEnd?.Invoke();
     }
 
     public void UpdateScore(int addScore)
     {
         Score += addScore;
-        uiManager.UpdateScoreUI(Score);
         GameEvents.OnScoreUpdated?.Invoke(Score);
     }
 
-    // 추가된 메소드: 현재 상태가 PlayingState라면 게임이 활성 상태로 판단
-    public bool IsGameActive()
-    {
-        return currentState is PlayingState;
-    }
-
-    void Update()
-    {
-        if (currentState != null)
-            currentState.Update();
-    }
-
-    public void ChangeState(IGameState newState)
-    {
-        if (currentState != null)
-            currentState.Exit();
-
-        currentState = newState;
-
-        if (currentState != null)
-            currentState.Enter();
-    }
-
-    // 게임 재시작: 현재 씬을 다시 로드합니다.
+    // 재시작과 종료 함수는 그대로 유지
     public void RestartGame()
     {
-        // 필요한 초기화 작업 (ServiceLocator.Clear() 등) 후 재시작할 수도 있습니다.
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    // 게임 종료: 애플리케이션 종료를 호출합니다.
     public void ExitGame()
     {
-        // 에디터 환경에서는 StopPlaying
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
-            Application.Quit();
+        Application.Quit();
 #endif
+    }
+
+    // 게임 활성 여부는 타이머나 상태 변화에 따라 이벤트로 처리 가능 (간단하게는 Score가 0 이상이면 플레이 중이라고 볼 수도 있음)
+    public bool IsGameActive()
+    {
+        // 예: TimerManager가 동작 중이면 게임이 활성 상태
+        return timerManager != null && timerManager.IsActive();
     }
 }
