@@ -8,9 +8,10 @@
 
 ## Demo ScreenShot
 
-![스크린샷1](ScreenShot\screenshot1.png)
-![스크린샷2](ScreenShot\screenshot2.png)
-![스크린샷3](ScreenShot\screenshot3.png)
+![screenshot1](https://github.com/user-attachments/assets/e6bac2c6-075f-45ca-999a-45e16b442bb6)
+![screenshot2](https://github.com/user-attachments/assets/c7d3627c-f735-4530-abc5-5a193887d09f)
+![screenshot3](https://github.com/user-attachments/assets/49a8c797-a39b-4387-a498-955fc5ba6f40)
+
 
 ## 주요 기능
 
